@@ -1,0 +1,21 @@
+rule "Rule 06-Credit"
+  when
+     $allocatedCashFlow : AllocatedCashFlow($account : account, $date : date, $amount : amount, type == TypedCashFlow.CREDIT)
+     not AllocatedCashFlow(account == $account, date < $date)
+  then
+     System.out.println("AllocatedCashFlow Credit : date = "+$date+" and amount = "+$amount);
+     $account.setBalance($account.getBalance()+$amount);
+     System.out.println("Account : account no = "+$account.getAccountNo()+" and new balance is = " + $account.getBalance());
+     retract($allocatedCashFlow);
+end
+
+rule "Rule 06-Debit"
+  when
+     $allocatedCashFlow : AllocatedCashFlow($account : account, $date : date, $amount : amount, type == TypedCashFlow.DEBIT)
+     not AllocatedCashFlow(account == $account, date < $date)
+  then
+     System.out.println("AllocatedCashFlow Debit : date = "+$date+" and amount = "+$amount);
+     $account.setBalance($account.getBalance() - $amount);
+     System.out.println("Account : account no = "+$account.getAccountNo()+" and new balance is = " + $account.getBalance());
+     retract($allocatedCashFlow);
+end
